@@ -29,9 +29,9 @@ export default class ProductList extends Component {
         }
     }
 
-    addCart = async (id) => {
+    addCart = async () => {
         try {
-            let response = await fetch(`http://localhost:3001/cart/${id}`,
+            let response = await fetch(`http://localhost:3005/shop`,
                 {
                     method: "POST"
                 })

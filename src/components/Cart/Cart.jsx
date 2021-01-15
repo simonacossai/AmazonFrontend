@@ -1,38 +1,43 @@
 import React, { Component } from 'react'
 import { Container, Row, Col, Card, Button, Alert } from 'react-bootstrap'
-import { getCartItem, deleteFromCart, completeOrder } from "../../api/api";
 import { BsTrashFill } from 'react-icons/bs';
 
+
 export default class Cart extends Component {
+    
     state = {
         items: [],
+        cart:[],
         total: 0,
         alert: false,
     }
+  
+    fetchCart = async (cartId) => {
+        try {
+          let response = await fetch(
+            "http://localhost:3005/shop/" + cartId,
+            {
+              method: "GET",
+            }
+          );
+          console.log(response);
+          if (response.ok) {
+            const data = await response.json();
+            this.setState({ cart: data });
+            console.log(this.state.cart, "fetched cart");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      componentDidMount() {
+        let cartId = localStorage.getItem('cartId');
+        this.fetchCart(cartId);
+        console.log(cartId)
+      }
 
-    componentDidMount = async () => {
-        const items = await getCartItem()
-        this.setState({ items })
-        let total = 0;
-        await this.state.items.forEach((item) => {
-            total += parseInt(item.price)
-        })
-        this.setState({ total })
-    };
-
-    deleteCart = async (id) => {
-        this.setState({ alert: true })
-        await deleteFromCart(id)
-
-        const items = await getCartItem()
-        this.setState({ items })
-        setTimeout(() => {
-            this.setState({alert: false});
-        }, 1000);
-        let total = 0;
-        await this.state.items.forEach((item) => {total += parseInt(item.price)})
-        this.setState({ total })
-    }
+  //  deleteCartItem = async (id) => {
+//    }
 
     render() {
         return (
@@ -69,7 +74,7 @@ export default class Cart extends Component {
                                     Thanks for choosing us! Feel free to contact us in case of problems
                                 </Card.Text>
                                 <Card.Subtitle className="my-3">Total: {this.state.total}$</Card.Subtitle>
-                                <Button className="productDetailsButton" onClick={() => completeOrder()}>Checkout</Button>
+                                <Button className="productDetailsButton">Checkout</Button>
                             </Card.Body>
                         </Card>
                     </Col>
