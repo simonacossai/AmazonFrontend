@@ -62,7 +62,7 @@ export async function fetchSingleProduct(id) {
 
 export async function fetchProductsByCategory(category) {
   try {
-    let response = await fetch(`http://localhost:3001/products?category=${category}`)
+    let response = await fetch(`http://localhost:3001/products/category/${category}`)
     if (response.ok) {
       let data = await response.json()
       return data

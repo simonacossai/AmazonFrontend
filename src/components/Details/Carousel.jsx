@@ -17,8 +17,9 @@ export default function Carousel({ reviews }) {
     return (
         <>
             <Container>
+                {reviews.length>0 &&                 <h2 className="text-center">What our clients think about it</h2>}
                 <Slider {...settings}>
-                    {reviews && reviews.map((e) =>
+                    {reviews.length>0 && reviews.map((e) =>
                         <Col className="mt-3">
                             <Card className="review-card" >
                                 <div className="first-half d-flex justify-content-center align-items-center text-center">
@@ -29,7 +30,7 @@ export default function Carousel({ reviews }) {
                                 </div>
                                 <Card.Body className="p-3 mt-2">
                                     <div className="d-flex justify-content-between">
-                                        <Card.Subtitle className="mb-2">{e.username}</Card.Subtitle>
+                                        <Card.Subtitle className="mb-2">{e.user}</Card.Subtitle>
                                         <Card.Subtitle className="mb-2 text-muted">{e.rate}</Card.Subtitle>
                                     </div>
                                     <Card.Text className="description text-muted">
@@ -40,6 +41,7 @@ export default function Carousel({ reviews }) {
                         </Col>
                     )}
                 </Slider>
+                {reviews.length===0 && <h1 className="text-center">Still no reviews for this product</h1>}
             </Container>
         </>
     )

@@ -30,7 +30,6 @@ export default class Details extends Component {
                         </div>
                     </Col>
                 </Row>
-                <h2 className="text-center">What our clients think about it</h2>
                 <Carousel reviews={this.state.reviews} product={this.state.product} />
             </Container>
         )
