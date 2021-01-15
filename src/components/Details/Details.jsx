@@ -19,7 +19,7 @@ export default class Details extends Component {
             <Container className="mb-5 mt-4 py-5">
                 <Row className="mb-5 mt-5 pt-5">
                     <Col md={6} className="d-flex justify-content-center" >
-                        <img src={this.state.product.image} className="product-image-detail" alt="product-cart" />
+                        <img src={this.state.product.productImage} className="product-image-detail" alt="product-cart" />
                     </Col>
                     <Col md={6} >
                         <h1 className="product-name text-center mb-3">- {this.state.product.name} -</h1>

@@ -5,23 +5,23 @@ import addImage from '../../assets/add.png';
 
 class AddProduct extends React.Component {
     state = {
+        productImage: "",
+        errMessage: '',
+        loading: false,
         newProduct: {
             name: '',
             description: '', 
             brand: '', 
             price: '', 
             category: ''
-        },
-        imageUrl: null,
-        errMessage: '',
-        loading: false
+        }
     }
     //take formData from the file input 
     HandleFile = (e) => {
         const formData = new FormData();
-        formData.append("productPhoto", e.target.files[0]);
+        formData.append("productImage", e.target.files[0]);
         console.log(formData);
-        this.setState({ imageUrl: formData });
+        this.setState({ productImage: formData });
     };
 
     //updates the fields of the form
@@ -32,61 +32,30 @@ class AddProduct extends React.Component {
         this.setState({ newProduct: newProduct })
     }
 
-    //this is the post of the image triggered into the post method for the product itself
-    PostImage = async (id) => {
-        try {
-            let response = await fetch(
-                `http://localhost:3001/products/${id}/upload`,
-                {
-                    method: "POST",
-                    body: this.state.imageUrl,
-                }
-            );
-            if (response.ok) {
-                alert("new product added");
-
-            } else {
-                const error = await response.json();
-                console.log(error);
-            }
-        } catch (error) {
-            console.log(error);
-            alert(error)
-        }
-    };
-
     //post method of the product
     submitnewProduct = async (e) => {
+        this.state.newProduct.productImage = this.state.productImage
+        console.log(this.state.newProduct, "this is before posting")
         e.preventDefault();
-        this.setState({ loading: true })
+       // this.setState({ loading: true })
         try {
-            let response = await fetch('http://localhost:3001/products',
+            let response = await fetch('http://localhost:3001/products/',
                 {
                     method: 'POST',
                     body: JSON.stringify(this.state.newProduct),
                     headers: new Headers({
-                        "Content-Type": "application/json"
+                        "Content-Type": "multipart/form-data"
                     })
                 })
             if (response.ok) {
+                console.log(this.state.newProduct)
                 alert("element added!")
                 let data = await response.json();
-                this.PostImage(data._id)
                 console.log(data)
-                this.setState({
-                    newProduct: {
-                        name: '',
-                        description: '',
-                        brand: '',
-                        price: '',
-                        category: ''
-                    },
-                    imageUrl: '',
-                    errMessage: '',
-                    loading: false
-                })
+              console.log("ok")
             } else {
                 console.log('an error occurred')
+                console.log(this.state.newProduct, "this is after posting but failed")
                 let error = await response.json()
                 this.setState({
                     errMessage: error.message,
