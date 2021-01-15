@@ -17,12 +17,14 @@ export default class ProductList extends Component {
 
     getProductsByCategory = async (e) => {
         let category = e.currentTarget.value;
+        console.log(category)
         if (category === "all") {
             let products = await fetchProducts();
             this.setState({ products });
         }
         else {
             let products = await fetchProductsByCategory(category)
+            console.log(products)
             this.setState({ products });
         }
     }
@@ -80,11 +82,17 @@ export default class ProductList extends Component {
                             Element already added to the cart!
                     </h4>
                     </Alert>}
-                {/*    {
-                        this.state.products.map((product, index) =>
+                    {
+                       this.state.products.length>0 ? this.state.products.map((product, index) =>
                             <SingleProduct product={product} props={this.props} add={this.addCart} key={index}/>
                         )
-                    } */}
+                        : 
+                      <Alert variant="danger" style={{ zIndex: "20000", position: "fixed", maxWidth: "1000px", top: "100px" }}>
+                        <h4>
+                           no elements for this category
+                    </h4>
+                    </Alert>
+                    }
                 </Row>
             </Container>
         )
