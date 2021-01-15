@@ -11,7 +11,7 @@ export default class SingleProduct extends Component {
           <div className="addToCart">
             <FaCartPlus className="addToCartIcon" onClick={() => this.props.add(this.props.product._id)} />
           </div>
-          <img variant="top" src={this.props.product.image} className="product-image" alt="product" />
+          <img variant="top" src={this.props.product.productImage} className="product-image" alt="product" />
           <Card.Body>
             <Card.Title>{this.props.product.name}</Card.Title>
             <Card.Text className="description">
