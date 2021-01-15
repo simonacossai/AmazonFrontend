@@ -7,6 +7,7 @@ import AddProduct from './components/Form/AddProduct';
 import Details from './components/Details/Details';
 import Cart from './components/Cart/Cart';
 
+
 function App() {
   return (
   <>

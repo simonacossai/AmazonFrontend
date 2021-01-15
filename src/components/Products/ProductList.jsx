@@ -27,7 +27,7 @@ export default class ProductList extends Component {
         }
     }
 
-    addCart = async (id) => {
+    addCart = async () => {
         try {
             let response = await fetch(`http://localhost:3005/shop`,
                 {
@@ -80,11 +80,11 @@ export default class ProductList extends Component {
                             Element already added to the cart!
                     </h4>
                     </Alert>}
-                    {
+                {/*    {
                         this.state.products.map((product, index) =>
                             <SingleProduct product={product} props={this.props} add={this.addCart} key={index}/>
                         )
-                    }
+                    } */}
                 </Row>
             </Container>
         )
