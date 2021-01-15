@@ -83,15 +83,13 @@ export default class ProductList extends Component {
                     </h4>
                     </Alert>}
                     {
-                       this.state.products.length>0 ? this.state.products.map((product, index) =>
+                        this.props.product.length!=0 ? this.props.product.map((product, index) =>
                             <SingleProduct product={product} props={this.props} add={this.addCart} key={index}/>
                         )
                         : 
-                      <Alert variant="danger" style={{ zIndex: "20000", position: "fixed", maxWidth: "1000px", top: "100px" }}>
-                        <h4>
-                           no elements for this category
-                    </h4>
-                    </Alert>
+                        this.state.products.map((product, index) =>
+                        <SingleProduct product={product} props={this.props} add={this.addCart} key={index}/>
+                        )
                     }
                 </Row>
             </Container>

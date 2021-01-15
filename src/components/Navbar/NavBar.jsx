@@ -5,7 +5,10 @@ import logo from '../../assets/amazonlogo.png';
 import './Navbar.css';
 import { Link, withRouter } from 'react-router-dom'
 
+
+
 class NavBar extends Component {
+ 
   render() {
     return (
       <Navbar bg="dark" variant="dark" expand="lg" className="navbarAmazon">
@@ -29,6 +32,7 @@ class NavBar extends Component {
                 style={{ backgroundColor: "#EEF3F8", border: "none", borderTopLeftRadius: "10px", borderBottomLeftRadius: "10px" }}
                 type="text"
                 placeholder="Search"
+                onChange={(e)=>this.props.getProducts(e.target.value)}
               />
               <InputGroup.Prepend>
                 <InputGroup.Text
