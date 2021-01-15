@@ -27,7 +27,6 @@ export default class ProductList extends Component {
         }
     }
 
-
     addCart = async (id) => {
         try {
             let response = await fetch(`http://localhost:3001/cart/${id}`,
@@ -74,7 +73,7 @@ export default class ProductList extends Component {
                     {this.state.alert && <Alert variant="success" style={{ zIndex: "20000", position: "fixed", maxWidth: "1000px", top: "100px" }}>
                         <h4>
                             Element successfully added to the cart!
-                    </h4>
+                        </h4>
                     </Alert>}
                     {this.state.errorAlert && <Alert variant="danger" style={{ zIndex: "20000", position: "fixed", maxWidth: "1000px", top: "100px" }}>
                         <h4>
