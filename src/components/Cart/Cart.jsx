@@ -9,35 +9,57 @@ export default class Cart extends Component {
         items: [],
         cart:[],
         total: 0,
+        user: [],
         alert: false,
+        
     }
   
-    fetchCart = async (cartId) => {
+    fetchCart = async () => {
+        let userId=localStorage.getItem('id');
         try {
           let response = await fetch(
-            "http://localhost:3005/shop/" + cartId,
+            "http://localhost:3001/cart/" + userId,
             {
               method: "GET",
             }
           );
-          console.log(response);
           if (response.ok) {
             const data = await response.json();
-            this.setState({ cart: data });
-            console.log(this.state.cart, "fetched cart");
+            let items = data.products;
+            let user= data.products[0].user;
+            console.log(items)
+            this.setState({user})
+            this.setState({ items });
           }
         } catch (error) {
           console.log(error);
         }
       };
       componentDidMount() {
-        let cartId = localStorage.getItem('cartId');
-        this.fetchCart(cartId);
-        console.log(cartId)
+          this.fetchCart()
       }
 
-  //  deleteCartItem = async (id) => {
-//    }
+   deleteCart = async (id) => {
+    try {
+        let response = await fetch(`http://localhost:3001/cart/${id}`,
+          {
+            method: "DELETE"
+          })
+        if (response.ok) {
+            this.fetchCart()
+            this.setState({ alert: true })
+            setTimeout(() => {
+                this.setState({
+                    alert: false
+                });
+            }, 1200);
+        } else {
+          alert("an error accurred")
+        }
+      } catch (err) {
+        console.log(err);
+      }
+   }
 
     render() {
         return (
@@ -51,15 +73,15 @@ export default class Cart extends Component {
                         {this.state.items && this.state.items.map((e) =>
                             <Card className="card p-1 mb-2 mt-3" >
                                 <div className="addToCart">
-                                    <BsTrashFill className="addToCartIcon" onClick={() => this.deleteCart(e._id)} />
+                                    <BsTrashFill className="addToCartIcon" onClick={() => this.deleteCart(e.id)} />
                                 </div>
                                 <Card.Body>
-                                    <Card.Title>{e.name}</Card.Title>
+                                    <Card.Title>{e.product.name}</Card.Title>
                                     <Card.Text className="description">
-                                        {e.description}
+                                        {e.product.description}
                                     </Card.Text>
                                     <div className="m-0 p-0 d-flex justify-content-between align-items-center text-center">
-                                        <p className="text-right text-muted m-0 p-0">$ {e.price}</p>
+                                        <p className="text-right text-muted m-0 p-0">$ {e.product.price}</p>
                                     </div>
                                 </Card.Body>
                             </Card>)}
@@ -69,7 +91,7 @@ export default class Cart extends Component {
                             <Card.Body>
                                 <Card.Title>Your order:</Card.Title>
                                 <Card.Text>
-                                    The thing we care the most is for you to be fully satisfied both for our products and the delivery.
+                                  The thing we care the most is for you to be fully satisfied both for our products and the delivery.
                                     We usually send the products in a few days.
                                     Thanks for choosing us! Feel free to contact us in case of problems
                                 </Card.Text>

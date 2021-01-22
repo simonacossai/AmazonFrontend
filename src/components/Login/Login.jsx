@@ -1,78 +1,131 @@
-import React, { useState } from "react";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import React from 'react'
+import { Alert, Button, Col, Form, Row, Spinner, Container } from 'react-bootstrap'
+import './Login.css';
 
-export default function Login() {
-  const [open, setOpen] = React.useState(false);
-  const [name, setName] = useState("");
+class Login extends React.Component {
+    state = {
+        newUser: {
+            firstName: '',
+            lastName:'',
+            email: ''
+        },
+        loading: false
+    }
+   
+   
+    //updates the fields of the form
+    updatenewUserField = (e) => {
+        let newUser = { ...this.state.newUser }
+        let currentId = e.currentTarget.id
+        newUser[currentId] = e.currentTarget.value
+        this.setState({ newUser: newUser })
+    }
 
-  const onNameChange = (e) => setName(e.target.value);
+    postUser=async()=>{
+      try {
+        const resp = await fetch(`http://localhost:3001/user`, {
+          method: "POST",
+          body: JSON.stringify(this.state.newUser),
+          headers: new Headers({
+            "Content-Type": "application/json",
+          }),
+        });
+        if (resp.ok) {
+          let response= await resp.json();
+          console.log(response);
+          await localStorage.setItem('id', response.id);
+        } else {
+          alert("something went wrong")
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+    //post method of the product
+    submitnewUser = async (e) => {
+        e.preventDefault();
+        this.postUser();
+      // await localStorage.setItem('name', JSON.stringify(this.state.newUser.name));
+       //await localStorage.setItem('email', JSON.stringify(this.state.newUser.email));
+        this.setState({loading: true})
+        this.props.history.push('/home')
+    }
 
-    
-    const requestOptions = {
-      method: "POST",
-      body: JSON.stringify({name}),
-      headers: { "Content-Type": "application/json" },
-    };
-    fetch("http://localhost:3005/shop", requestOptions)
-    .then(function(response){ return response.json(); })
-    .then(function(data) {
-        let cartId = data._id;
-        console.log(data)
-        console.log(cartId)})
-      handleClose()
-  };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+    render() {
+        return (
+            <>
+                {
+                    this.state.errMessage ? (
+                        <Alert variant="danger" className="mt-5">
+                            We encountered a problem with your request
+                            {this.state.errMessage}
+                        </Alert>
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-  window.onload = () => {
-    handleClickOpen();
-  };
-  return (
-      
-    <div>
-      <Dialog
-        open={open}
-        onClose={handleClickOpen}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            To buy on this website, please enter your email address here. We
-            will send updates occasionally.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-
-            label="Email Address"
-            type="text"
-            fullWidth
-            value={name}
-            onChange={onNameChange}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleSubmit} color="primary">
-            Subscribe
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  );
+                    ) :
+                        (
+                            <Container className="pt-5 mt-5 justify-content-center align-items-center text-center" fluid>
+                                <h1 className="text-black mt-5 pt-5">🔑 Please login 🔑</h1>
+                                <Form className="mt-4 p-3 d-flex justify-content-center align-items-center text-center formproduct" style={{ flexDirection: "column" }} onSubmit={this.submitnewUser}>
+                                    <div className="formDiv p-4">
+                                        <Col md={12}>
+                                            <Form.Group>
+                                                <Form.Label htmlFor="firstName">Name</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    name="firstName"
+                                                    id="firstName"
+                                                    className="input"
+                                                    placeholder="Your firstName"
+                                                    value={this.state.newUser.firstName}
+                                                    onChange={this.updatenewUserField}
+                                                    required
+                                                />
+                                            </Form.Group>
+                                        </Col>
+                                        <Col md={12}>
+                                            <Form.Group>
+                                                <Form.Label htmlFor="lastName">Lastame</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    name="lastName"
+                                                    id="lastName"
+                                                    className="input"
+                                                    placeholder="Your lastName"
+                                                    value={this.state.newUser.lastName}
+                                                    onChange={this.updatenewUserField}
+                                                    required
+                                                />
+                                            </Form.Group>
+                                        </Col>
+                                        <Col md={12}>
+                                            <Form.Group>
+                                                <Form.Label htmlFor="email">email</Form.Label>
+                                                <Form.Control
+                                                    type="email"
+                                                    name="email"
+                                                    className="input"
+                                                    id="email"
+                                                    placeholder="email"
+                                                    value={this.state.newUser.email}
+                                                    onChange={this.updatenewUserField}
+                                                    required
+                                                />
+                                            </Form.Group>
+                                        </Col>
+                                        <Row className="d-flex justify-content-right text-right align-items-right">
+                                            <Col>
+                                                <Button type="submit" className="addProductButton" >Submit</Button>
+                                            </Col>
+                                        </Row>
+                                    </div>
+                                </Form>
+                            </Container>
+                        )
+                }
+            </>
+        )
+    }
 }
+export default Login

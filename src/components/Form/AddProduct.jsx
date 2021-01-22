@@ -7,14 +7,16 @@ class AddProduct extends React.Component {
     state = {
         newProduct: {
             name: '',
-            description: '', 
-            brand: '', 
-            price: '', 
-            category: ''
+            description: '',
+            brand: '',
+            price: '',
         },
+        categoryId: null,
         productImage: null,
         errMessage: '',
-        loading: false
+        loading: false,
+        alert: false,
+        errorAlert: false,
     }
     //take formData from the file input 
     HandleFile = (e) => {
@@ -30,6 +32,21 @@ class AddProduct extends React.Component {
         let currentId = e.currentTarget.id
         newProduct[currentId] = e.currentTarget.value
         this.setState({ newProduct: newProduct })
+
+        if(currentId==="category"){
+            if(e.currentTarget.value==="top"){
+                console.log("top")
+                this.setState({ categoryId: 1 }, ()=> console.log(this.state.categoryId))
+            }else if(e.currentTarget.value==="pants"){
+                console.log("pants")
+                this.setState({ categoryId: 3 }, ()=> console.log(this.state.categoryId))
+            }else if(e.currentTarget.value==="shoes"){
+                console.log("shoes")
+                this.setState({ categoryId: 2 }, ()=> console.log(this.state.categoryId))
+            }else{
+                console.log("category not defined")
+            }
+        }
     }
 
     //this is the post of the image triggered into the post method for the product itself
@@ -38,12 +55,12 @@ class AddProduct extends React.Component {
             let response = await fetch(
                 `http://localhost:3001/products/${id}/upload`,
                 {
-                    method: "POST",
+                    method: "PUT",
                     body: this.state.productImage,
                 }
             );
             if (response.ok) {
-                alert("new product added");
+                console.log("ok")
             } else {
                 const error = await response.json();
                 console.log(error);
@@ -57,20 +74,31 @@ class AddProduct extends React.Component {
     //post method of the product
     submitnewProduct = async (e) => {
         e.preventDefault();
+        const product ={
+            name: this.state.newProduct.name,
+            description: this.state.newProduct.description,
+            brand: this.state.newProduct.brand,
+            price: this.state.newProduct.price,
+            categoryId: this.state.categoryId
+        }
         this.setState({ loading: true })
         try {
             let response = await fetch('http://localhost:3001/products',
                 {
                     method: 'POST',
-                    body: JSON.stringify(this.state.newProduct),
+                    body: JSON.stringify(product),
                     headers: new Headers({
                         "Content-Type": "application/json"
                     })
                 })
             if (response.ok) {
-                alert("element added!")
-                let data = await response.json();
-                this.PostImage(data._id)
+                this.setState({ alert: true })
+                setTimeout(() => {
+                    this.setState({
+                        alert: false
+                    });
+                }, 1200);                let data = await response.json();
+                this.PostImage(data.id)
                 console.log(data)
                 this.setState({
                     newProduct: {
@@ -87,10 +115,12 @@ class AddProduct extends React.Component {
             } else {
                 console.log('an error occurred')
                 let error = await response.json()
-                this.setState({
-                    errMessage: error.message,
-                    loading: false,
-                })
+                this.setState({ errorAlert: true })
+                setTimeout(() => {
+                    this.setState({
+                        errorAlert: false
+                    });
+                }, 1200);
             }
         } catch (e) {
             console.log(e) // Error
@@ -105,26 +135,18 @@ class AddProduct extends React.Component {
     render() {
         return (
             <>
-                {
-                    this.state.loading && (
-                        <div className="d-flex justify-content-center my-5">
-                            Sendin your infos pls wait
-                            <div className="ml-2">
-                                <Spinner animation="border" variant="success" />
-                            </div>
-                        </div>
-                    )
-                }
-                {
-                    this.state.errMessage ? (
-                        <Alert variant="danger" className="mt-5">
-                            We encountered a problem with your request
-                            {this.state.errMessage}
-                        </Alert>
-
-                    ) :
-                        (
+              
                             <Container className="d-flex pt-5 mt-3 justify-content-center align-items-center text-center" fluid>
+                            {this.state.alert && <Alert variant="success" style={{ zIndex: "20000", position: "fixed", maxWidth: "1000px", top: "100px" }}>
+                        <h4>
+                            Product successfully published!
+                        </h4>
+                    </Alert>}
+                    {this.state.errorAlert && <Alert variant="danger" style={{ zIndex: "20000", position: "fixed", maxWidth: "1000px", top: "100px" }}>
+                        <h4>
+                        Something went wrongg
+                    </h4>
+                    </Alert>}
                                 <Form className="mt-5 d-flex justify-content-center align-items-center text-center formproduct" style={{ flexDirection: "column" }} onSubmit={this.submitnewProduct}>
                                     <div className="formDiv">
                                         <Col md={12}>
@@ -189,17 +211,14 @@ class AddProduct extends React.Component {
 
                                         <Col md={12}>
                                             <Form.Group>
-                                                <Form.Label htmlFor="category">Category</Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    name="category"
-                                                    className="input"
-                                                    id="category"
-                                                    placeholder="category"
-                                                    value={this.state.newProduct.category}
-                                                    onChange={this.updatenewProductField}
-                                                    required
-                                                />
+                                                <select name="category" id="category" onChange={this.updatenewProductField}>
+                                                    <option value="category">Category</option>
+                                                    <option value="top">Top</option>
+                                                    <option value="pants">Pants</option>
+                                                    <option value="shoes">shoes</option>
+                                                </select>
+                                               
+
                                             </Form.Group>
                                             <Col>
                                                 <label for="file" id="file-label">
@@ -209,7 +228,7 @@ class AddProduct extends React.Component {
                                                         onChange={this.HandleFile}
                                                         accept="image/*"
                                                     />
-                                                    <img src={addImage} className="uploadImage" alt="upload"/>
+                                                    <img src={addImage} className="uploadImage" alt="upload" />
                                                 </label>
                                             </Col>
                                         </Col>
@@ -221,8 +240,7 @@ class AddProduct extends React.Component {
                                     </div>
                                 </Form>
                             </Container>
-                        )
-                }
+                
             </>
         )
     }

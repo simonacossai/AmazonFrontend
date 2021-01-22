@@ -15,7 +15,6 @@ export default class Home extends Component {
                 <Container className="hero px-4 mb-5" fluid>
                     <Row className="d-flex justify-content-left align-items-center">
                         <Col md={5} className="heroCol d-flex justify-content-left">
-                        <Login />
                             <h1 className="text-left heroH1">Any variation that fits your imagination</h1>
                             <h4 className="text-left heroH4">Find a perfect outfit that will suit your soul and body —————</h4>
                         </Col>

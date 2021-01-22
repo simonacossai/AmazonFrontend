@@ -7,6 +7,7 @@ import AddProduct from './components/Form/AddProduct';
 import Details from './components/Details/Details';
 import Cart from './components/Cart/Cart';
 import { Component } from 'react';
+import Login from './components/Login/Login';
 
 class App extends Component {
   state={
@@ -15,7 +16,7 @@ class App extends Component {
   getProducts=async(name)=>{
     if(name){
       try {
-        let response = await fetch(`http://localhost:3001/products/name/${name}`)
+      let response = await fetch(`http://localhost:3001/products/?title=${name}`)
         if (response.ok) {
           let data = await response.json()
           console.log(data)
@@ -34,7 +35,8 @@ class App extends Component {
       <>
   <Router>
    <NavBar getProducts={this.getProducts}/>
-   <Route path="/" exact render={(props) => <Home  {...props} product={this.state.data}/>} />
+   <Route path="/" exact render={(props) => <Login  {...props}/>} />
+   <Route path="/home" exact render={(props) => <Home  {...props} product={this.state.data}/>} />
    <Route path="/addForm" exact render={(props) => <AddProduct  {...props}/>} />
    <Route path="/details/:id" exact render={(props) => <Details {...props}/>} />
    <Route path="/cart" exact render={(props) => <Cart {...props}/>} />

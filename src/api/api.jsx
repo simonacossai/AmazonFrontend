@@ -5,7 +5,7 @@ export async function deleteProduct(id) {
         method: "DELETE"
       })
     if (response.ok) {
-      alert("post successfully deleted");
+      alert("post ssuccessfully deleted");
     } else {
       alert("an error accurred")
     }
@@ -62,7 +62,7 @@ export async function fetchSingleProduct(id) {
 
 export async function fetchProductsByCategory(category) {
   try {
-    let response = await fetch(`http://localhost:3001/products/category/${category}`)
+    let response = await fetch(`http://localhost:3001/products/?category=${category}`)
     if (response.ok) {
       let data = await response.json()
       return data
@@ -76,7 +76,7 @@ export async function fetchProductsByCategory(category) {
 
 export async function getReviews(id) {
   try {
-    let response = await fetch(`http://localhost:3001/products/${id}/reviews/`)
+    let response = await fetch(`http://localhost:3001/reviews/${id}`)
     if (response.ok) {
       let data = await response.json()
       return data

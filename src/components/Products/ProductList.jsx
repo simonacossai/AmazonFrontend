@@ -29,9 +29,10 @@ export default class ProductList extends Component {
         }
     }
 
-    addCart = async () => {
+    addCart = async (productId) => {
+        let userId=localStorage.getItem('id');
         try {
-            let response = await fetch(`http://localhost:3005/shop`,
+            let response = await fetch(`http://localhost:3001/cart/${userId}/${productId}`,
                 {
                     method: "POST"
                 })
@@ -83,7 +84,7 @@ export default class ProductList extends Component {
                     </h4>
                     </Alert>}
                     {
-                        this.props.product.length!=0 ? this.props.product.map((product, index) =>
+                        this.props.product.length>0 ? this.props.product.map((product, index) =>
                             <SingleProduct product={product} props={this.props} add={this.addCart} key={index}/>
                         )
                         : 
